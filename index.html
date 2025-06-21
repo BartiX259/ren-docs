@@ -34,14 +34,14 @@
       }
     </style>
   </head>
-  <body x-init="catgs=get_data()">
+  <body x-init="catgs=get_data()" class="flex flex-col h-screen">
     <!-- <x-button></x-button> -->
     <div
-      class="text-xl font-semibold relative w-full mx-auto overflow-hidden bg-white border-b border-gray-200 p-4"
+      class="text-xl font-semibold relative w-full min-h-16 mx-auto overflow-hidden bg-white border-b border-gray-200 p-4"
     >
       Ren docs
     </div>
-    <div class="flex">
+    <div class="flex h-full">
       <x-accordion x-effect="categories=catgs"></x-accordion>
       <div class="p-10 w-full">
         <x-doc-section
