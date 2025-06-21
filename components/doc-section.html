@@ -1,0 +1,19 @@
+<template x-component:x="doc-section" x-data="{ category: '', functions: [] }">
+  <div class="w-full max-w-2xl space-y-4 text-neutral-900">
+    <h2
+      class="text-lg font-semibold border-b border-neutral-300 pb-1 w-full"
+      x-text="category ? category : 'Select a category'"
+    ></h2>
+
+    <template x-for="fn in functions" :key="fn.name">
+      <div class="space-y-1">
+        <div
+          x-text="fn.name"
+          class="text-md font-semibold relative w-full mx-auto overflow-hidden bg-white border-b border-gray-200 pt-2"
+        ></div>
+        <x-code-snippet x-effect="code=fn.sig"></x-code-snippet>
+        <p class="text-sm text-neutral-700" x-text="fn.desc"></p>
+      </div>
+    </template>
+  </div>
+</template>

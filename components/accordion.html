@@ -1,0 +1,87 @@
+<template
+  x-component:x="accordion"
+  x-data="() => ({
+    categories: [
+      {name: 'Filesystem', entries: ['rename', 'mkdir']},
+      {name: 'Input/output', entries: ['print', 'input']}
+    ],
+    activeAccordion: '', 
+    activeEntry: '',
+    setActiveAccordion(id) { 
+      this.activeAccordion = (this.activeAccordion == id) ? '' : id 
+    },
+    setActiveEntry(id) { 
+      this.activeEntry = (this.activeEntry == id) ? '' : id 
+    },
+  })"
+>
+  <div
+    x-data="{
+        search: '', 
+        catgs: [],
+    }"
+    x-effect="catgs = categories
+  .map(cat => {
+    const filteredEntries = cat.entries
+      .map(entry => {
+        const filteredFunctions = entry.functions.filter(fn =>
+          fn.name.toLowerCase().includes(search.toLowerCase())
+        );
+        const entryMatches = entry.name.toLowerCase().includes(search.toLowerCase()) || filteredFunctions.length;
+
+        return entryMatches ? { ...entry, functions: filteredFunctions } : null;
+      })
+      .filter(Boolean);
+
+    const categoryMatches = cat.name.toLowerCase().includes(search.toLowerCase()) || filteredEntries.length;
+
+    return categoryMatches ? { ...cat, entries: filteredEntries } : null;
+  })
+  .filter(Boolean)"
+    class="relative w-full lg:min-w-[300px] sm:min-w-[100px] h-screen mx-auto overflow-hidden text-sm font-normal bg-white border-r border-gray-200 divide-y divide-gray-200"
+  >
+    <div class="p-4">
+      <x-input
+        x-model="search"
+        x-effect="label='Search'; placeholder='Enter your filter...'"
+      ></x-input>
+    </div>
+    <template x-for="category in catgs" :key="category.name">
+      <div x-data="{ id: $id('accordion') }">
+        <button
+          @click="setActiveAccordion(id)"
+          class="flex items-center justify-between w-full p-4 text-left select-none cursor-pointer"
+          :class="{ 'text-neutral-900 font-semibold': activeAccordion==id, 'text-neutral-600 hover:text-neutral-900': activeAccordion!=id }"
+        >
+          <span x-text="category.name"></span>
+          <svg
+            class="w-4 h-4 duration-200 ease-out"
+            :class="{ 'rotate-180': activeAccordion == id }"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+        <div x-show="activeAccordion == id" x-collapse x-cloak>
+          <div class="p-4 pt-0 opacity-70">
+            <template x-for="entry in category.entries" :key="entry.name">
+              <div
+                x-data="{ id: $id('entry') }"
+                x-text="entry.name"
+                @click="setActiveEntry(id); activeEntry==id ? $store.active = {category: category.name, entry: entry.name} : $store.active = {category: '', entry: ''}"
+                class="flex items-center justify-between w-full p-4 text-left select-none cursor-pointer"
+                :class="{ 'text-neutral-900 font-semibold': activeEntry==id, 'text-neutral-600 hover:text-neutral-900': activeEntry!=id }"
+              ></div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+</template>
