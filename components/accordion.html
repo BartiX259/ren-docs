@@ -1,10 +1,11 @@
 <template
   x-component:x="accordion"
-  x-data="() => ({
+  x-data="{
     categories: [
       {name: 'Filesystem', entries: ['rename', 'mkdir']},
       {name: 'Input/output', entries: ['print', 'input']}
     ],
+    activeModel: {},
     activeAccordion: '', 
     activeEntry: '',
     setActiveAccordion(id) { 
@@ -13,7 +14,8 @@
     setActiveEntry(id) { 
       this.activeEntry = (this.activeEntry == id) ? '' : id 
     },
-  })"
+  }"
+  x-modelable="activeModel"
 >
   <div
     x-data="{
@@ -74,7 +76,7 @@
               <div
                 x-data="{ id: $id('entry') }"
                 x-text="entry.name"
-                @click="setActiveEntry(id); activeEntry==id ? $store.active = {category: category.name, entry: entry.name} : $store.active = {category: '', entry: ''}"
+                @click="setActiveEntry(id); activeEntry==id ? activeModel = {category: category.name, entry: entry.name} : activeModel = {category: '', entry: ''}"
                 class="flex items-center justify-between w-full p-4 text-left select-none cursor-pointer"
                 :class="{ 'text-neutral-900 font-semibold': activeEntry==id, 'text-neutral-600 hover:text-neutral-900': activeEntry!=id }"
               ></div>

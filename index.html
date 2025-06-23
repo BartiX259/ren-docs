@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Docs</title>
+    <title>Ren Docs</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/@vimesh/ui"></script>
     <script
@@ -10,14 +10,6 @@
       src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"
     ></script>
     <script src="data.js"></script>
-    <script>
-      document.addEventListener("alpine:init", () => {
-        Alpine.store("active", {
-          category: "",
-          entry: "",
-        });
-      });
-    </script>
     <script
       src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
       defer
@@ -34,19 +26,22 @@
       }
     </style>
   </head>
-  <body x-init="catgs=get_data()" class="flex flex-col h-screen">
-    <!-- <x-button></x-button> -->
+  <body
+    x-data="{catgs: get_data(), active: {}}"
+    class="flex flex-col min-h-screen"
+  >
     <div
       class="text-xl font-semibold relative w-full min-h-16 mx-auto overflow-hidden bg-white border-b border-gray-200 p-4"
     >
       Ren docs
     </div>
-    <div class="flex h-full">
-      <x-accordion x-effect="categories=catgs"></x-accordion>
-      <div class="p-10 w-full">
+    <div class="flex flex-grow">
+      <x-accordion x-effect="categories=catgs" x-model="active"></x-accordion>
+      <div class="p-10 w-full h-full">
         <x-doc-section
-          x-effect="if (!$store.active.category) { category = ''; functions = []; return; }; category = $store.active.entry; functions = catgs.find(cat => cat.name === $store.active.category).entries.find(ent => ent.name === $store.active.entry).functions"
+          x-effect="if (!active.category) { category = ''; functions = []; return; }; category = active.entry; functions = catgs.find(cat => cat.name === active.category).entries.find(ent => ent.name === active.entry).functions"
         ></x-doc-section>
+        <div class="h-2"></div>
       </div>
     </div>
   </body>

@@ -6,13 +6,42 @@
     ></h2>
 
     <template x-for="fn in functions" :key="fn.name">
-      <div class="space-y-1">
+      <div class="space-y-1" x-data="{openExample: false}">
         <div
-          x-text="fn.name"
-          class="text-md font-semibold relative w-full mx-auto overflow-hidden bg-white border-b border-gray-200 pt-2"
-        ></div>
+          class="flex justify-between items-end relative w-full mx-auto overflow-hidden bg-white border-b border-gray-200 pt-2"
+        >
+          <div class="text-md font-semibold" x-text="fn.name"></div>
+          <div class="text-sm text-amber-600" x-text="fn.warn"></div>
+          <template x-if="fn.example">
+            <div
+              class="cursor-pointer bg-neutral-50 p-2 rounded-t-lg"
+              @click="openExample = !openExample"
+            >
+              <div
+                class="relative w-full font-medium text-sm mx-auto overflow-hidden text-neutral-700"
+                x-text="openExample ? 'Hide example' : 'Show example'"
+              ></div>
+            </div>
+          </template>
+        </div>
         <x-code-snippet x-effect="code=fn.sig"></x-code-snippet>
         <p class="text-sm text-neutral-700" x-text="fn.desc"></p>
+        <div x-show="openExample" x-cloak x-collapse>
+          <div class="h-3"></div>
+          <p class="text-sm font-semibold border-b border-gray-200">Example:</p>
+          <div class="h-1"></div>
+          <template x-for="(item, i) in fn.example" :key="i">
+            <div>
+              <template x-if="i % 2 === 0">
+                <x-code-snippet x-effect="code=item"></x-code-snippet>
+              </template>
+              <template x-if="i % 2 === 1">
+                <p class="text-sm text-neutral-700" x-text="item"></p>
+              </template>
+              <div class="h-2"></div>
+            </div>
+          </template>
+        </div>
       </div>
     </template>
   </div>
