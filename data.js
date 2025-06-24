@@ -140,6 +140,19 @@ function get_data() {
           ],
         },
         {
+          name: "Type definitions",
+          functions: [
+            {
+              name: "Type definition",
+              sig: "type <name> = <type>",
+              desc: "Assigns a name to a type.",
+              example: [
+                "type str = <char>;\nfn process_str(input: str) -> str { ... }",
+              ],
+            },
+          ],
+        },
+        {
           name: "Generics",
           functions: [
             {
@@ -156,28 +169,28 @@ function get_data() {
           ],
         },
         {
-          name: "Error handling",
+          name: "Optionals & Error handling",
           functions: [
             {
               name: "Error type",
               sig: "<ok type> ? <error type>",
-              desc: "A union type for functions that can return either a success value or a failure value. Use `if let` to handle the result.",
+              desc: "A union type for functions that can return either a success value or a failure value.",
               example: [
-                "// This function returns a list of characters or an error message.\nfn read_file(path: <char>) -> [char] ? <char> { ... }",
-                "The `?` in the return type indicates that the function can fail.",
-                'let result = read_file("data.txt");',
-                "The variable `result` now holds either a `[char]` on success or a `<char>` on failure.",
+                'fn err_fn(ok: bool) -> <char> ? <char> {\n    if ok {\n        return "ok";\n    } else {\n        return ?"err";\n    }\n}',
+                "The `?` in the return type indicates that the function can fail. Use '?' before an expression to make it an error.",
+                "let result = err_fn(some_bool);",
+                "The variable `result` now holds either a `<char>` on success or a `<char>` on failure.",
               ],
             },
             {
               name: "Optional type",
               sig: "?<type>",
-              desc: "Represents a value that may be present or absent. It is a convenient shorthand for `<type> ? null`, where `null` is a special type indicating absence.",
+              desc: "Represents a value that may be present or absent.",
               example: [
-                "// This function tries to find a user and may return nothing.\nfn find_user(id: int) -> ?(name: <char>) { ... }",
+                'fn opt_fn(ok: bool) -> ?<char> {\n    if ok {\n        return "ok";\n    } else {\n        return none;\n    }\n}',
                 "The `?` prefix in the return type indicates the result is optional.",
-                "let user = find_user(42);",
-                "The `user` variable might contain a user struct or a `null`-like value if the user was not found.",
+                "let result = opt_fn(some_bool);",
+                "The `result` variable might contain a `<char>` or a none value.",
               ],
             },
             {
@@ -196,12 +209,12 @@ function get_data() {
               example: [
                 'let config = read_file("config.ini")!',
                 "If `config.ini` is crucial for the program to run, `!` ensures it doesn't proceed in an invalid state.",
-                'print("Config loaded: "); print(config);',
+                'print("Config loaded: {config}\\n");',
                 "This line will only execute if `read_file` succeeds. Otherwise, the program will crash with an error message.",
               ],
             },
             {
-              name: "Unwrapping value",
+              name: "Unwrapping values",
               sig: "if let <ok name> = err_expr { ... } else <error name> { ... }",
               desc: "The idiomatic way to safely handle and unwrap error and optional types. It checks for the success variant, binding its value to `<ok name>`, or executes the `else` block with the error value.",
               example: [
@@ -209,6 +222,46 @@ function get_data() {
                 "First, call a function that returns a result.",
                 'if let contents = result {\n  print("Success:\\n");\n  print(contents);\n} else err {\n  eprint("Error: ");\n  eprint(err);\n}',
                 "The `if let` construct safely unwraps the result, allowing separate logic for success and failure cases.",
+              ],
+            },
+          ],
+        },
+        {
+          name: "Enums",
+          functions: [
+            {
+              name: "Enum definition",
+              sig: "enum <name> { <variant_1>, <variant_2>, ... }",
+              desc: "Defines a custom type that can be one of several distinct variants. An instance of an enum can only be one of its variants at a time.",
+              example: [
+                "enum direction {\n    up,\n    down,\n    left,\n    right\n}",
+                "Defines a `direction` enum with four possible variants.",
+                "let go = direction.up;",
+                "Create a variable `go` and assign it the `up` variant.",
+              ],
+            },
+            {
+              name: "Enums with data",
+              sig: "enum <name> { <variant>(<type>), ... }",
+              desc: "Enum variants can hold associated data. Each variant can have a single type attached to it. To store multiple values, use a tuple.",
+              example: [
+                "enum message {\n    quit,\n    write(<char>),\n    change_color((int, int, int)) // Holds a single tuple type\n}",
+                "Define an enum where some variants hold associated data.",
+                'let msg = message.write("hello");',
+                "Create an instance of the `write` variant.",
+                "let color_msg = message.change_color((255, 0, 128));",
+                "Create an instance of the `change_color` variant, associating a tuple with it.",
+              ],
+            },
+            {
+              name: "Pattern matching",
+              sig: "if let <enum_name>.<variant>(<vars>) = <expr> { ... }",
+              desc: "Use `if let` to check if an enum instance matches a specific variant. This destructures the enum, binding any associated data (including values inside a tuple) to variables for use within the `if` block.",
+              example: [
+                "// Using the message enum from the previous example\nlet msg = message.change_color((255, 0, 128));",
+                "Create an instance of the `change_color` variant.",
+                'if let message.write(text) = msg {\n    print(text);\n} else if let message.change_color((r, g, b)) = msg {\n    print("New color: {r}\\n");\n}',
+                "The `if let` chain checks each variant. When a match occurs, its data, including nested tuples, can be destructured and bound to local variables.",
               ],
             },
           ],
