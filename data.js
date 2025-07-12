@@ -13,7 +13,7 @@ function get_data() {
               example: [
                 'import lib/std\n\nfn main() {\n    print("Hello, world!\\n");\n}',
                 "To build and run:",
-                'ren hello.re\n./out'
+                'renc hello.re\n./out'
               ],
             },
             {
@@ -22,7 +22,8 @@ function get_data() {
               desc: "Imports another Ren file, bringing its public functions and types into the current namespace. The path is relative and the `.re` extension is omitted.",
               example: [
                 '// in file: my_lib.re\npub fn say_hi() {\n    print("Hi from my_lib!\\n");\n}\n\n// in file: main.re\nimport my_lib\n\nfn main() {\n    say_hi(); // a direct call\n}',
-                "Define a public function in `my_lib.re`. Import `my_lib.re` and call its public function directly without a namespace qualifier.",
+                "Define a public function in `my_lib.re`. Import `my_lib.re` and call its public function directly without a namespace qualifier. To build and run:",
+                'renc main.re\n./out'
               ],
             },
           ],
